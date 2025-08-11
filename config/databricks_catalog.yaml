@@ -1,0 +1,45 @@
+# Databricks Unity Catalog Configuration for Firebolt/Iceberg
+# Copy this file and customize for your environment
+
+catalog:
+  type: databricks
+  workspace_url: https://your-workspace.cloud.databricks.com
+  catalog_uri: https://your-workspace.cloud.databricks.com/api/2.0/unity-catalog
+  token: ${DATABRICKS_TOKEN}  # Set via environment variable
+  
+storage:
+  type: s3
+  bucket: your-iceberg-bucket  # Change to your S3 bucket
+  prefix: iceberg-tables
+  region: us-east-1
+  
+# Generation settings
+generation:
+  target_size_gb: 100
+  workers: 8
+  database: benchmark
+  
+# Tables to generate (comment out tables you don't need)
+tables:
+  - customers
+  - products
+  - suppliers
+  - orders
+  - lineitem
+  - inventory
+  - events
+
+# Firebolt connection example
+firebolt:
+  engine_name: your_engine_name
+  database: your_database
+  external_catalog: unity_catalog_name
+  
+# Example Firebolt queries for testing:
+# SELECT COUNT(*) FROM unity_catalog_name.benchmark.customers;
+# SELECT country, COUNT(*) as customer_count FROM unity_catalog_name.benchmark.customers GROUP BY country ORDER BY customer_count DESC;
+# SELECT o.order_id, o.total_amount, c.customer_name 
+# FROM unity_catalog_name.benchmark.orders o 
+# JOIN unity_catalog_name.benchmark.customers c ON o.customer_id = c.customer_id 
+# WHERE o.order_date >= '2024-01-01' 
+# LIMIT 10;

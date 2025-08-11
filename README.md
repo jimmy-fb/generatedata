@@ -5,13 +5,24 @@ This project provides a complete solution for generating large-scale benchmark d
 ## 📁 Project Structure
 
 ```
-trvsfb/
-├── generate_benchmark_data.py    # Main data generation script
+generatedata/
+├── generate_benchmark_data.py    # Main data generation script (Parquet)
+├── generate_iceberg_tables.py    # 🆕 Apache Iceberg table generator
 ├── setup_and_run.py              # Setup and utility script
 ├── inspect_parquet_s3.py         # S3 Parquet file inspector
-├── requirements_data_gen.txt      # Python dependencies
+├── createsamplebenchmarkset.py   # Sample data creation
+├── requirements.txt               # Python dependencies
 ├── README.md                     # Main project documentation
-└── BENCHMARK_README.md           # This file
+├── ICEBERG_README.md             # 🆕 Iceberg documentation
+├── config/                       # 🆕 Configuration files
+│   ├── hive_catalog.yaml
+│   └── databricks_catalog.yaml
+├── examples/                     # 🆕 Usage examples
+│   ├── hive_catalog_example.py
+│   └── databricks_catalog_example.py
+└── scripts/                      # 🆕 Convenience scripts
+    ├── run_hive_generation.sh
+    └── run_databricks_generation.sh
 ```
 
 ## 🚀 Quick Start
@@ -63,7 +74,7 @@ The script generates 7 interconnected tables:
 
 ## 🔧 Scripts Overview
 
-### 1. `generate_benchmark_data.py`
+### 1. `generate_benchmark_data.py` (Parquet Format)
 **Main data generation script with features:**
 - Multi-threaded parallel processing
 - Chunked generation (1M rows per chunk)
@@ -99,7 +110,24 @@ python generate_benchmark_data.py --bucket my-benchmark-bucket --size-gb 100 --w
 python generate_benchmark_data.py --bucket my-benchmark-bucket --table customers --table products
 ```
 
-### 2. `setup_and_run.py`
+### 2. `generate_iceberg_tables.py` 🆕 (Iceberg Format)
+**Apache Iceberg table generator supporting multiple catalogs:**
+- **Hive Metastore** integration for Trino
+- **Databricks Unity Catalog** integration for Firebolt  
+- Optimized partitioning and schema evolution
+- Time travel and versioning capabilities
+- Production-ready monitoring and error handling
+
+**Key Features:**
+- Multi-catalog support (Hive, Databricks)
+- Intelligent partitioning strategies
+- Parallel processing with progress tracking
+- Configurable via CLI, YAML, or Python API
+- Complete referential integrity
+
+📖 **Full documentation:** [ICEBERG_README.md](ICEBERG_README.md)
+
+### 3. `setup_and_run.py`
 **Setup and utility script with features:**
 - Dependency installation
 - AWS credentials validation
@@ -121,7 +149,7 @@ python setup_and_run.py
 python setup_and_run.py --run --bucket my-bucket --size-gb 100
 ```
 
-### 3. `inspect_parquet_s3.py`
+### 4. `inspect_parquet_s3.py`
 **S3 Parquet file inspector for:**
 - Reading Parquet file schemas from S3
 - Viewing sample data

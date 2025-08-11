@@ -1,0 +1,49 @@
+# Hive Catalog Configuration for Trino/Iceberg
+# Copy this file and customize for your environment
+
+catalog:
+  type: hive
+  metastore_uri: thrift://localhost:9083  # Your Hive metastore URI
+  
+storage:
+  type: s3
+  bucket: your-iceberg-bucket  # Change to your S3 bucket
+  prefix: iceberg-tables
+  region: us-east-1
+  
+# Optional: AWS credentials (if not using default profile or IAM roles)
+# aws:
+#   access_key_id: your_access_key_id
+#   secret_access_key: your_secret_access_key
+
+# Generation settings
+generation:
+  target_size_gb: 100
+  workers: 8
+  database: benchmark
+  
+# Tables to generate (comment out tables you don't need)
+tables:
+  - customers
+  - products
+  - suppliers
+  - orders
+  - lineitem
+  - inventory
+  - events
+
+# Trino connection example
+trino:
+  host: localhost
+  port: 8080
+  catalog: iceberg
+  schema: benchmark
+  
+# Example Trino queries for testing:
+# SELECT COUNT(*) FROM iceberg.benchmark.customers;
+# SELECT country, COUNT(*) as customer_count FROM iceberg.benchmark.customers GROUP BY country ORDER BY customer_count DESC;
+# SELECT o.order_id, o.total_amount, c.customer_name 
+# FROM iceberg.benchmark.orders o 
+# JOIN iceberg.benchmark.customers c ON o.customer_id = c.customer_id 
+# WHERE o.order_date >= DATE '2024-01-01' 
+# LIMIT 10;
